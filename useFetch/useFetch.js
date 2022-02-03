@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 
 export const useFetch = ( url ) => {
-
   if (!url) {
-    throw new Error('no url');
+    throw new Error('Provide a valid url');
   }
   
-  const isMounted = useRef(true); // matener la referncia cuando esta montado
-  const [state, setState] = useState({ data: null, loading: true, error: null })
+  const isMounted = useRef(true); // keep reference when mounted
+  const [state, setState] = useState({ data: null, loading: true, error: null });
 
   useEffect(() => {
     return () => {
-      // hacemos que la ref sea desmontado cleanup
       isMounted.current = false;
     }
   }, []);
@@ -21,7 +19,6 @@ export const useFetch = ( url ) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-
         if (isMounted.current) {
           setState({
             loading: false,
@@ -29,17 +26,15 @@ export const useFetch = ( url ) => {
             data
           })
         }
-
       })
       .catch( () => {
         setState({
           data: null,
           loading: false,
-          error: 'No se pudo cargar la información'
+          error: 'Not able to load data'
         })
       })
   }, [url])
 
   return state
-
 }
