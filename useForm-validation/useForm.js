@@ -1,6 +1,6 @@
 import { useState } from 'react';
-// https://felixgerschau.com/react-hooks-form-validation-typescript/
-export const useFormv2 = ( options ) => {
+
+export const useForm = ( options ) => {
   const [data, setData] = useState(options?.initialValues || {});
 
   const [errors, setErrors] = useState({});
