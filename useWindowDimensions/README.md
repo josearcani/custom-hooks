@@ -1,7 +1,8 @@
 # useWindowDimensions
 
-Example:
-```
+## How to use
+
+```js
   const Component = () => {
   const { height, width } = useWindowDimensions();
 

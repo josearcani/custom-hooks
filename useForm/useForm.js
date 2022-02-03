@@ -1,13 +1,4 @@
 import { useState } from 'react';
-/**
- * initialState ==> {
- *  nombre: '',
- *  description: '',
- * }
- * 
- * return values { nombre: 'jose', description: 'datos' }
- * 
- */
 
 export const useForm = (initialState = {}) => {
   const [values, setValues] = useState(initialState);
@@ -19,11 +10,10 @@ export const useForm = (initialState = {}) => {
     })
   }
 
-  // limpiar formulario
-  const cleanForm = () => {
+  const reset = () => {
     setValues(initialState);
   }
 
-  return [ values, handleInputChange, cleanForm ];
+  return [ values, handleInputChange, reset ];
 
 }
