@@ -4,7 +4,7 @@ source: [useForm](https://felixgerschau.com/react-hooks-form-validation-typescri
 ## Features
 
 - Validate user input
-- Updte form data
+- Update form data
 - Handle form submission
 
 ## How to use it
