@@ -1,25 +1,48 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
-export const useForm = ( options ) => {
-  const [data, setData] = useState(options?.initialValues || {});
+interface Validation {
+  required?: {
+    value: boolean;
+    message: string;
+  };
+  pattern?: {
+    value: string;
+    message: string;
+  };
+  custom?: {
+    isValid: (value: string) => boolean;
+    message: string;
+  };
+}
+type ErrorRecord<T> = Partial<Record<keyof T, string>>;
+type Validations<T extends {}> = Partial<Record<keyof T, Validation>>;
 
-  const [errors, setErrors] = useState({});
+export const useForm = <T extends Record<keyof T, any> = {}>(options?: {
+  validations?: Validations<T>;
+  initialValues?: Partial<T>;
+  onSubmit?: () => void;
+}) => {
 
-  const handleChange = (key, sanitizeFn,) => (e) => {
+  const [data, setData] = useState<T>((options?.initialValues || {}) as T);
+  const [errors, setErrors] = useState<ErrorRecord<T>>({});
+
+  const handleChange = <S extends unknown>(
+    key: keyof T,
+    sanitizeFn?: (value: string) => S
+    ) => (e: ChangeEvent<HTMLInputElement & HTMLSelectElement>) => {
     const value = sanitizeFn ? sanitizeFn(e.target.value) : e.target.value;
     setData({
       ...data,
       [key]: value,
-    })
-  }
+    });
+  };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validations = options?.validations;
-
     if (validations) {
       let valid = true;
-      const newErrors = {};
+      const newErrors: ErrorRecord<T> = {};
       for (const key in validations) {
         const value = data[key]; // value fo the field we're validating
         const validation = validations[key]; // the matching rule for this key
@@ -48,9 +71,8 @@ export const useForm = ( options ) => {
       if (!valid) {
         setErrors(newErrors);
         return;
-      }
-
-    }
+      };
+    };
 
     setErrors({});
 
@@ -58,12 +80,10 @@ export const useForm = ( options ) => {
       options.onSubmit();
     }
   }
-
   return {
     data,
     handleChange,
     handleSubmit,
     errors,
   }
-
 }
